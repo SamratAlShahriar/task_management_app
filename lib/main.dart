@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:task_management_app/pages/add_task_page.dart';
+import 'package:task_management_app/pages/add_new_task_page.dart';
 import 'package:task_management_app/pages/home_page.dart';
 import 'package:task_management_app/pages/task_details_page.dart';
 import 'package:task_management_app/theme/theme.dart';

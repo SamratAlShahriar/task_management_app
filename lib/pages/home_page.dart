@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:task_management_app/custom_widgets/go_premium.dart';
 import 'package:task_management_app/custom_widgets/task_add_item.dart';
 import 'package:task_management_app/custom_widgets/task_item.dart';
-import 'package:task_management_app/pages/add_task_page.dart';
+import 'package:task_management_app/pages/add_new_task_page.dart';
 
 class HomePage extends StatelessWidget {
   static const String routeName = '/home_page';
