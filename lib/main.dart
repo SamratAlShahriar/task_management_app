@@ -6,7 +6,6 @@ import 'package:task_management_app/pages/task_details_page.dart';
 import 'package:task_management_app/theme/theme.dart';
 
 void main() {
-
   runApp(const MyApp());
 }
 
