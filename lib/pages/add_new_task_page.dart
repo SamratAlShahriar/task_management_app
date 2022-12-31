@@ -20,7 +20,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     txtTitleCtrl = TextEditingController();
     txtDateCtrl = TextEditingController();
     txtStartTimeCtrl = TextEditingController();
@@ -31,7 +30,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     txtTitleCtrl.dispose();
     txtDateCtrl.dispose();
     txtStartTimeCtrl.dispose();
@@ -78,7 +76,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ),
                 child: IconButton(
                     onPressed: () {},
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.task_alt,
                       color: Colors.black,
                       size: 28,
@@ -231,27 +229,47 @@ class _AddTaskPageState extends State<AddTaskPage> {
           Wrap(
             spacing: 8,
             runSpacing: 2,
-            children: List.generate(
-                100,
-                (index) => ChoiceChip(
-                      label: const Text(
-                        'Graphic',
-                      ),
-                      backgroundColor: Colors.black.withOpacity(0.15),
-                      selectedColor: Colors.black87,
-                      labelStyle: TextStyle(
-                        color: index == _selectedIndex ? Colors.white : null,
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 4),
-                      selected: index == _selectedIndex ? true : false,
-                      onSelected: (value) {
-                        setState(() {
-                          _selectedIndex = index;
-                          _selected = value;
-                        });
-                      },
-                    )),
+            children: List.generate(10, (index) {
+              if (index == 9) {
+                return TextButton.icon(
+                  style: TextButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                          side: const BorderSide(
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(30))),
+                  label: const Text(
+                    'Add New Category',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  icon: const Icon(
+                    (Icons.add),
+                    size: 12,
+                  ),
+                  onPressed: () {},
+                );
+              }
+              return ChoiceChip(
+                label: const Text(
+                  'Graphic',
+                ),
+                backgroundColor: Colors.black.withOpacity(0.15),
+                selectedColor: Colors.black87,
+                labelStyle: TextStyle(
+                  color: index == _selectedIndex ? Colors.white : null,
+                  fontSize: 12,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                selected: index == _selectedIndex ? true : false,
+                onSelected: (value) {
+                  setState(() {
+                    _selectedIndex = index;
+                    _selected = value;
+                  });
+                },
+              );
+            }),
           ),
         ],
       ),

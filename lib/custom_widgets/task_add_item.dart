@@ -1,6 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:task_management_app/pages/add_task_page.dart';
+import 'package:task_management_app/pages/add_new_task_page.dart';
 
 class TaskAddItem extends StatelessWidget {
   const TaskAddItem({Key? key}) : super(key: key);

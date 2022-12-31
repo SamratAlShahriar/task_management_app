@@ -39,6 +39,9 @@ dependencies:
   dotted_border:
   table_calendar:
   google_fonts:
+  intl:
+  provider:
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:
