@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_management_app/custom_widgets/add_category_form.dart';
+import 'package:task_management_app/provider/task_provider.dart';
+import 'package:task_management_app/utils/helper_functions.dart';
 
 class AddTaskPage extends StatefulWidget {
   static const String routeName = '/add_task_page';
@@ -17,6 +21,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   late TextEditingController txtDesCtrl;
   int _selectedIndex = 0;
   bool _selected = false;
+  late TaskProvider taskProvider;
 
   @override
   void initState() {
@@ -25,7 +30,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
     txtStartTimeCtrl = TextEditingController();
     txtEndTimeCtrl = TextEditingController();
     txtDesCtrl = TextEditingController();
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    taskProvider = Provider.of<TaskProvider>(context);
   }
 
   @override
@@ -229,8 +242,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
           Wrap(
             spacing: 8,
             runSpacing: 2,
-            children: List.generate(10, (index) {
-              if (index == 9) {
+            children: List.generate(taskProvider.taskList.length + 1, (index) {
+              if (index == taskProvider.taskList.length) {
                 return TextButton.icon(
                   style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
@@ -247,12 +260,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     (Icons.add),
                     size: 12,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showPopupDialog(
+                        context: context, cWidget: const AddCategoryForm());
+                  },
                 );
               }
+              final cat = taskProvider.taskList[index];
               return ChoiceChip(
-                label: const Text(
-                  'Graphic',
+                label: Text(
+                  cat.categoryTitle,
                 ),
                 backgroundColor: Colors.black.withOpacity(0.15),
                 selectedColor: Colors.black87,

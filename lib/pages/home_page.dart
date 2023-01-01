@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart' as cicon;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:task_management_app/custom_widgets/go_premium.dart';
 import 'package:task_management_app/custom_widgets/task_add_item.dart';
 import 'package:task_management_app/custom_widgets/task_item.dart';
 import 'package:task_management_app/pages/add_new_task_page.dart';
+import 'package:task_management_app/provider/task_provider.dart';
 
 class HomePage extends StatelessWidget {
   static const String routeName = '/home_page';
@@ -12,6 +14,10 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tp = Provider.of<TaskProvider>(
+      context,
+    );
+    tp.getAllTaskByCategory();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
@@ -32,28 +38,28 @@ class HomePage extends StatelessWidget {
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.only(bottom: 32),
-              itemCount: 10,
+              itemCount: tp.taskList.length + 1,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 1,
               ),
               itemBuilder: (context, index) {
-                if(index==9){
+                if (index == (tp.taskList.length)) {
                   return const TaskAddItem();
                 }
-                return const TaskItem(iconData: Icons.heart_broken,
-                    taskType: 'Home',
-                    taskItemColor: Colors.purple);
+                final ti = tp.taskList[index];
+                return TaskItem(
+                    iconData: IconData(ti.iconCodePoint),
+                    taskType: ti.categoryTitle,
+                    taskItemColor: Color(ti.color));
               },
             ),
           ),
         ],
       ),
-
       bottomNavigationBar: buildBottomNavBar(),
-
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           Navigator.pushNamed(context, AddTaskPage.routeName);
         },
         shape: RoundedRectangleBorder(
@@ -61,7 +67,10 @@ class HomePage extends StatelessWidget {
         ),
         elevation: 0,
         backgroundColor: Colors.black,
-        child: const Icon(Icons.add, color: Colors.white,),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
@@ -91,13 +100,14 @@ class HomePage extends StatelessWidget {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           items: const [
-            BottomNavigationBarItem(icon: Icon(cicon.CupertinoIcons.house),label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(cicon.CupertinoIcons.profile_circled),label: 'More'),
-
+            BottomNavigationBarItem(
+                icon: Icon(cicon.CupertinoIcons.house), label: 'Home'),
+            BottomNavigationBarItem(
+                icon: Icon(cicon.CupertinoIcons.profile_circled),
+                label: 'More'),
           ],
         ),
       ),
-
     );
   }
 
@@ -126,12 +136,12 @@ class HomePage extends StatelessWidget {
                     fontSize: 22,
                   ),
                   children: [
-                    TextSpan(text: ' '),
-                    TextSpan(
-                        text: 'Samrat!',
-                        style:
+                TextSpan(text: ' '),
+                TextSpan(
+                    text: 'Samrat!',
+                    style:
                         TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                  ]))
+              ]))
         ],
       ),
       actions: [
