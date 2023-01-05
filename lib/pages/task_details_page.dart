@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:task_management_app/custom_widgets/task_timeline__item.dart';
 
 class TaskDetailPage extends StatefulWidget {
   static const String routeName = '/task_details_page';
@@ -14,6 +15,8 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
   DateTime? _selectedDay;
   late CalendarFormat _calendarFormat;
   late DateTime _focusedDay;
+
+  bool condi = false;
 
   @override
   void initState() {
@@ -33,7 +36,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
           _buildSliverAppBar(context),
           SliverToBoxAdapter(
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
@@ -44,14 +47,14 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                 children: [
                   _buildTableCalendar(),
                   Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(),
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(),
                     child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               'Tasks',
                               style: TextStyle(
                                 fontSize: 22,
@@ -59,7 +62,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 horizontal: 5,
                                 vertical: 2,
                               ),
@@ -69,10 +72,11 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                               ),
                               child: Row(
                                 children: [
-                                  Text('Timeline', style: TextStyle(
-                                    color: Colors.grey[700]
-                                  ),),
-                                  Icon(Icons.arrow_drop_down),
+                                  Text(
+                                    'Timeline',
+                                    style: TextStyle(color: Colors.grey[700]),
+                                  ),
+                                  const Icon(Icons.arrow_drop_down),
                                 ],
                               ),
                             )
@@ -85,6 +89,32 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
               ),
             ),
           ),
+          condi
+              ? SliverFillRemaining(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    child: const Center(
+                      child: Text('No Task Today'),
+                    ),
+                  ),
+                )
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                  childCount: 6,
+                  (context, index) {
+                    return TaskTimelineItem();
+                  },
+                )),
+          SliverToBoxAdapter(
+            child: Container(
+              height: 32,
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -97,7 +127,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
             color: Colors.black.withOpacity(0.5),
             shape: BoxShape.circle,
           ),
-          selectedDecoration: BoxDecoration(
+          selectedDecoration: const BoxDecoration(
             color: Colors.black,
             shape: BoxShape.circle,
           )),
@@ -143,7 +173,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new,
             size: 20,
           ),
@@ -151,7 +181,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
         actions: [
           IconButton(
               onPressed: () {},
-              icon: Icon(
+              icon: const Icon(
                 Icons.more_vert,
                 size: 32,
               ))
@@ -160,7 +190,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+            children: const [
               Text(
                 'Tasks Title',
                 style: TextStyle(

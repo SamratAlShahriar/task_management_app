@@ -1,4 +1,4 @@
-const String kTaskId = 'id';
+const String kTaskCatId = 'id';
 const String kCategoryTitle = 'category';
 const String kColor = 'color';
 const String kIconCodePoint = 'code_point';
@@ -26,7 +26,7 @@ class TaskCategoryModel {
 
   factory TaskCategoryModel.fromMap(Map<String, dynamic> map) {
     return TaskCategoryModel(
-      id: map[kTaskId],
+      id: map[kTaskCatId],
       categoryTitle: map[kCategoryTitle],
       color: map[kColor],
       iconCodePoint: map[kIconCodePoint],
@@ -39,7 +39,7 @@ class TaskCategoryModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      kTaskId: id,
+      kTaskCatId: id,
       kCategoryTitle: categoryTitle,
       kColor: color,
       kIconCodePoint: iconCodePoint,

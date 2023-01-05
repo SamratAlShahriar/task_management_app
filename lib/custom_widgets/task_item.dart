@@ -38,6 +38,8 @@ class TaskItem extends StatelessWidget {
             const SizedBox(height: 16,),
             Text(
               taskType,
+              overflow: TextOverflow.clip,
+              maxLines: 2,
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

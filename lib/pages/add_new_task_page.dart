@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:task_management_app/custom_widgets/add_category_form.dart';
 import 'package:task_management_app/provider/task_provider.dart';
@@ -20,8 +21,12 @@ class _AddTaskPageState extends State<AddTaskPage> {
   late TextEditingController txtEndTimeCtrl;
   late TextEditingController txtDesCtrl;
   int _selectedIndex = 0;
-  bool _selected = false;
   late TaskProvider taskProvider;
+  bool firstTime = true;
+
+  DateTime? _selectedDate;
+  DateTime? _selectedStartTime;
+  DateTime? _selectedEndTime;
 
   @override
   void initState() {
@@ -30,7 +35,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
     txtStartTimeCtrl = TextEditingController();
     txtEndTimeCtrl = TextEditingController();
     txtDesCtrl = TextEditingController();
-
     super.initState();
   }
 
@@ -38,7 +42,11 @@ class _AddTaskPageState extends State<AddTaskPage> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-    taskProvider = Provider.of<TaskProvider>(context);
+    if (firstTime) {
+      taskProvider = Provider.of<TaskProvider>(context, listen: true);
+      taskProvider.getAllTaskCategoryList();
+      firstTime = false;
+    }
   }
 
   @override
@@ -119,14 +127,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
           TextField(
             controller: txtTitleCtrl,
             style: const TextStyle(
-              fontSize: 22,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
             decoration: const InputDecoration(
               label: Text(
                 'Title',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey,
                 ),
@@ -137,16 +145,37 @@ class _AddTaskPageState extends State<AddTaskPage> {
           TextField(
             controller: txtDateCtrl,
             style: const TextStyle(
-              fontSize: 22,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
-            onTap: () {},
+            onTap: () async {
+              final dt = await DatePicker.showDatePicker(
+                context,
+                minTime: DateTime.now(),
+              );
+              if (dt == null) {
+                return;
+              }
+              if (dt.year == _selectedDate?.year &&
+                  dt.month == _selectedDate?.month &&
+                  dt.day == _selectedDate?.day) {
+                //same date selected
+              } else {
+                _selectedStartTime = null;
+                _selectedEndTime = null;
+                txtStartTimeCtrl.text = '';
+                txtEndTimeCtrl.text = '';
+              }
+              _selectedDate = dt;
+              txtDateCtrl.text =
+                  formatDateTime(dt: _selectedDate ?? DateTime.now());
+            },
             readOnly: true,
             decoration: const InputDecoration(
               label: Text(
                 'Date',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey,
                 ),
@@ -160,16 +189,33 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 child: TextField(
                   controller: txtStartTimeCtrl,
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
-                  onTap: () {},
+                  onTap: () async {
+                    if (_selectedDate == null) {
+                      showSnackBar(context: context, msg: 'Please select a date first');
+                      return;
+                    }
+
+                    final dt = await DatePicker.showTime12hPicker(
+                      context,
+                      currentTime: DateTime.now(),
+                    );
+                    if (dt == null) {
+                      return;
+                    }
+
+                    _selectedStartTime = dt;
+                    txtStartTimeCtrl.text = formatDateTime(
+                        dt: _selectedStartTime!, pattern: 'HH:mm a');
+                  },
                   readOnly: true,
                   decoration: const InputDecoration(
                     label: Text(
                       'Start Time',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey,
                       ),
@@ -185,16 +231,32 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 child: TextField(
                   controller: txtEndTimeCtrl,
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
-                  onTap: () {},
+                  onTap: () async {
+                    if (_selectedDate == null) {
+                      showSnackBar(context: context, msg: 'Please select a date first');
+                      return;
+                    }
+
+                    final dt = await DatePicker.showTime12hPicker(
+                      context,
+                      currentTime: _selectedDate,
+                    );
+                    if (dt == null) {
+                      return;
+                    }
+                    _selectedEndTime = dt;
+                    txtEndTimeCtrl.text = formatDateTime(
+                        dt: _selectedEndTime!, pattern: 'hh:mm a');
+                  },
                   readOnly: true,
                   decoration: const InputDecoration(
                     label: Text(
                       'End Time',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey,
                       ),
@@ -217,7 +279,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               label: Text(
                 'Description',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey,
                 ),
@@ -232,7 +294,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             'Category',
             style: TextStyle(
               color: Colors.grey,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -242,8 +304,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
           Wrap(
             spacing: 8,
             runSpacing: 2,
-            children: List.generate(taskProvider.taskList.length + 1, (index) {
-              if (index == taskProvider.taskList.length) {
+            children: List.generate(taskProvider.taskCategoryList.length + 1,
+                (index) {
+              if (index == taskProvider.taskCategoryList.length) {
                 return TextButton.icon(
                   style: TextButton.styleFrom(
                       foregroundColor: Colors.black,
@@ -261,12 +324,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     size: 12,
                   ),
                   onPressed: () {
-                    showPopupDialog(
+                    // showPopupDialog(
+                    //   context: context,
+                    //   cWidget: const AddCategoryForm(),
+                    // );
+                    showBottomSheetDialog(
                         context: context, cWidget: const AddCategoryForm());
                   },
                 );
               }
-              final cat = taskProvider.taskList[index];
+              final cat = taskProvider.taskCategoryList[index];
               return ChoiceChip(
                 label: Text(
                   cat.categoryTitle,
@@ -282,11 +349,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 onSelected: (value) {
                   setState(() {
                     _selectedIndex = index;
-                    _selected = value;
                   });
                 },
               );
             }),
+          ),
+          const SizedBox(
+            height: 16,
           ),
         ],
       ),

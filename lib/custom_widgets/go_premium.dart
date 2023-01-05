@@ -27,13 +27,13 @@ class GoPremium extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 16,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Go Premium',
                     style: TextStyle(
                         color: Colors.white,

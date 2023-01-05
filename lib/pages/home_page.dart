@@ -7,17 +7,41 @@ import 'package:task_management_app/custom_widgets/task_item.dart';
 import 'package:task_management_app/pages/add_new_task_page.dart';
 import 'package:task_management_app/provider/task_provider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends cicon.StatefulWidget {
   static const String routeName = '/home_page';
 
   const HomePage({Key? key}) : super(key: key);
 
   @override
+  cicon.State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends cicon.State<HomePage> {
+  late TaskProvider taskProvider;
+  bool firstTime = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    if(firstTime) {
+      taskProvider = Provider.of<TaskProvider>(context, listen: true);
+      taskProvider.getAllTaskCategoryList();
+      firstTime = false;
+    }
+    super.didChangeDependencies();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final tp = Provider.of<TaskProvider>(
-      context,
-    );
-    tp.getAllTaskByCategory();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _buildAppBar(),
@@ -37,19 +61,25 @@ class HomePage extends StatelessWidget {
           ),
           Expanded(
             child: GridView.builder(
+              physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.only(bottom: 32),
-              itemCount: tp.taskList.length + 1,
+              itemCount: taskProvider.taskCategoryList.length + 1,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: 1,
               ),
               itemBuilder: (context, index) {
-                if (index == (tp.taskList.length)) {
+                if (index == (taskProvider.taskCategoryList.length)) {
                   return const TaskAddItem();
                 }
-                final ti = tp.taskList[index];
+                final ti = taskProvider.taskCategoryList[index];
                 return TaskItem(
-                    iconData: IconData(ti.iconCodePoint),
+                    iconData: IconData(
+                      ti.iconCodePoint,
+                      fontFamily: ti.iconFontFamily,
+                      fontPackage: ti.iconFontPackage,
+                      matchTextDirection: ti.hasTextDirectionMatched,
+                    ),
                     taskType: ti.categoryTitle,
                     taskItemColor: Color(ti.color));
               },
